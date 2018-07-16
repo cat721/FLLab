@@ -100,7 +100,7 @@ organizations:
     peers:
       - peer0.org1.example.com
       - peer1.org1.example.com
-      - peer1.org1.example.com
+      - peer2.org1.example.com
     # [Optional]. Certificate Authorities issue certificates for identification purposes in a Fabric based
     # network. Typically certificates provisioning is done in a separate process outside of the
     # runtime network. Fabric-CA is a special certificate authority that provides a REST APIs for
@@ -211,8 +211,8 @@ certificateAuthorities:
     httpOptions:
       verify: false
     tlsCACerts:
-#      path: artifacts/channel/crypto-config/peerOrganizations/org1.example.com/ca/ca.org1.example.com-cert.pem
-       path: artifacts/channel/crypto-config/peerOrganizations/org1.example.com/msp/tlscacerts/tlsca.org1.example.com-cert.pem
+      path: artifacts/channel/crypto-config/peerOrganizations/org1.example.com/ca/ca.org1.example.com-cert.pem
+ #      path: artifacts/channel/crypto-config/peerOrganizations/org1.example.com/msp/tlscacerts/tlsca.org1.example.com-cert.pem
     # Fabric-CA supports dynamic user enrollment via REST APIs. A "root" user, a.k.a registrar, is
     # needed to enroll and invoke new users.
     registrar:
