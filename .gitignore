@@ -9,3 +9,5 @@
 /config
 .DS_Store
 .project
+# crypto-config artifacts
+./ShanghaiElectricPower/fabric_network/crypto-config/*
