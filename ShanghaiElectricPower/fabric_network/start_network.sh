@@ -1,3 +1,7 @@
+if [ -d ../fabric-client-kv-org1 ]; then
+  echo "removing existing credential directory"
+  rm -rf ../fabric-client-kv-org1
+fi
 
 networkDown() {
   docker-compose -f $COMPOSE_FILE down --volumes --remove-orphans
