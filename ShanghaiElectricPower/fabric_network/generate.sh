@@ -127,7 +127,7 @@ if [ -d ../artifacts/channel/crypto-config ]; then
     rm -rf ../artifacts/channel/crypto-config
 fi
 
-if [ -e ../artifacts/channel/*.tx ] ;then
+if [ -e "../artifacts/channel/*.tx" ] ;then
      echo "overriding existing .tx"
     rm -rf ../artifacts/channel/*.tx
 fi
