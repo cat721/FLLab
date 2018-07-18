@@ -121,6 +121,9 @@ function generateChannelArtifacts() {
   echo "##########################################################"
   # Note: For some unknown reason (at least for now) the block file can't be
   # named orderer.genesis.block or the orderer will fail to launch!
+  if [ ! -d channel-artifacts ]; then
+    mkdir channel-artifacts
+  fi
   set -x
   configtxgen -profile OneOrgOrderersGenesis -outputBlock ./channel-artifacts/genesis.block
   res=$?
@@ -167,17 +170,20 @@ generateChannelArtifacts
 replacePrivateKey
 
 ##config org1 sdk configuration
+if [ ! -d ../artifacts/channel ]; then
+  mkdir -p ../artifacts/channel
+fi
 if [ -d ../artifacts/channel/crypto-config ]; then
     echo "overriding existing crypto config directory"
     rm -rf ../artifacts/channel/crypto-config
 fi
 
-if [ -e ../artifacts/channel/*.tx ] ;then
+if [ -e "../artifacts/channel/*.tx" ] ;then
      echo "overriding existing .tx"
     rm -f ../artifacts/channel/*.tx
 fi
 
-if [ -e ../artifacts/channel/*.block ] ;then
+if [ -e "../artifacts/channel/*.block" ] ;then
      echo "overriding existing genesis block"
     rm -f ../artifacts/channel/*.block
 fi
@@ -185,12 +191,15 @@ cp -r crypto-config ../artifacts/channel/
 cp -r channel-artifacts/* ../artifacts/channel/
 
 ##config org2 sdk configuration
+if [ ! -d ../../org2/artifacts/channel ]; then
+  mkdir -p ../../org2/artifacts/channel
+fi
 if [ -d ../../org2/artifacts/channel/crypto-config ]; then
     echo "overriding existing crypto config directory"
     rm -rf ../../org2/artifacts/channel/crypto-config
 fi
 
-if [ -e ../../org2/artifacts/channel/*.tx ] ;then
+if [ -e "../../org2/artifacts/channel/*.tx" ] ;then
      echo "overriding existing .tx"
     rm -f ../../org2/artifacts/channel/*.tx
 fi
@@ -199,16 +208,19 @@ if [ -e ../../org2/artifacts/channel/*.block ] ;then
      echo "overriding existing genesis block"
     rm -f ../../org2/artifacts/channel/*.block
 fi
-cp -r crypto-config ../../org2/artifacts/channel/
+cp -r crypto-config ../../org2/artifacts/channel/crypto-config
 cp -r channel-artifacts/* ../../org2/artifacts/channel/
 
 ##config org3 sdk configuration
+if [ ! -d ../../org3/artifacts/channel ]; then
+  mkdir -p ../../org3/artifacts/channel
+fi
 if [ -d ../../org3/artifacts/channel/crypto-config ]; then
     echo "overriding existing crypto config directory"
     rm -rf ../../org3/artifacts/channel/crypto-config
 fi
 
-if [ -e ../../org3/artifacts/channel/*.tx ] ;then
+if [ -e "../../org3/artifacts/channel/*.tx" ] ;then
      echo "overriding existing .tx"
     rm -f ../../org2/artifacts/channel/*.tx
 fi
@@ -217,5 +229,5 @@ if [ -e ../../org3/artifacts/channel/*.block ] ;then
      echo "overriding existing genesis block"
     rm -f ../../org3/artifacts/channel/*.block
 fi
-cp -r crypto-config ../../org3/artifacts/channel/
+cp -r crypto-config ../../org3/artifacts/channel/crypto-config
 cp -r channel-artifacts/* ../../org3/artifacts/channel/
