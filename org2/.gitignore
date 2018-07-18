@@ -1,0 +1,12 @@
+/node_modules/*
+/package-lock.json
+/fabric-client-kv-org*
+
+/token
+/artifacts/network-config.yaml
+/artifacts/channel/*
+
+/fabric_network/crypto-config/*
+/fabric_network/channel-artifacts/*
+/fabric_network/docker-compose.yaml
+
