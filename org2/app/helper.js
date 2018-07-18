@@ -43,13 +43,13 @@ async function getClientForOrg (userorg, username) {
 	// lets only load the network settings and save the client for later
 	let client = hfc.loadFromConfig(hfc.getConfigSetting('network'+config));
 
-        logger.info("userorg+config is ",userorg+config);
 	// This will load a connection profile over the top of the current one one
 	// since the first one did not have a client section and the following one does
 	// nothing will actually be replaced.
 	// This will also set an admin identity because the organization defined in the
 	// client section has one defined
 	client.loadFromConfig(hfc.getConfigSetting(userorg+config));
+
 	// this will create both the state store and the crypto store based
 	// on the settings in the client section of the connection profile
 	await client.initCredentialStores();
