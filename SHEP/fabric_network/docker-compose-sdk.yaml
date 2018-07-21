@@ -1,0 +1,45 @@
+version: '2'
+
+services:
+
+  org1_sdk:
+    container_name: org1_sdk
+    image: fabric:sdk
+    ports: 
+      - 4000:4000
+    volumes:
+      - ../org1/network-config.yaml:/FLLab/org/artifacts/network-config.yaml
+      - ../org1/org.yaml:/FLLab/org/artifacts/org.yaml
+      - ../org1/src/:/FLLab/org/artifacts/src/
+      - ./channel-artifacts/channel.tx:/FLLab/org/artifacts/channel/channel.tx
+      - ./crypto-config/:/FLLab/org/artifacts/channel/crypto-config/
+    working_dir: /FLLab/org
+    command: node app
+
+  org2_sdk:
+    container_name: org2_sdk
+    image: fabric:sdk
+    ports:
+      - 4001:4000
+    volumes:
+      - ../org2/network-config.yaml:/FLLab/org/artifacts/network-config.yaml
+      - ../org2/org.yaml:/FLLab/org/artifacts/org.yaml
+      - ../org2/src/:/FLLab/org/artifacts/src/
+      - ./channel-artifacts/channel.tx:/FLLab/org/artifacts/channel/channel.tx
+      - ./crypto-config/:/FLLab/org/artifacts/channel/crypto-config/
+    working_dir: /FLLab/org
+    command: node app
+
+  org3_sdk:
+    container_name: org3_sdk
+    image: fabric:sdk
+    ports:
+      - 4002:4000
+    volumes:
+      - ../org3/network-config.yaml:/FLLab/org/artifacts/network-config.yaml
+      - ../org3/org.yaml:/FLLab/org/artifacts/org.yaml
+      - ../org3/src/:/FLLab/org/artifacts/src/
+      - ./channel-artifacts/channel.tx:/FLLab/org/artifacts/channel/channel.tx
+      - ./crypto-config/:/FLLab/org/artifacts/channel/crypto-config/
+    working_dir: /FLLab/org
+    command: node app
