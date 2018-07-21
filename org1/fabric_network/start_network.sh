@@ -60,6 +60,18 @@ function checkPrereqs() {
     fi
   done
 }
+function cleanCreds() {
+  if [ -d "../fabric-client-kv-org1" ];
+    rm -rf "../fabric-client-kv-org1"
+  fi
+  if [ -d "../../org2/fabric-client-kv-org2" ];
+    rm -rf "../../org2/fabric-client-kv-org2"
+  fi
+  if [ -d "../../org3/fabric-client-kv-org3" ];
+    rm -rf "../../org3/fabric-client-kv-org3"
+  fi
+  
+}
 
 CHANNEL_NAME="mychannel"
 # use this as the default docker-compose yaml definition
@@ -68,6 +80,7 @@ COMPOSE_FILE=docker-compose.yaml
 LANGUAGE=golang
 # default image tag
 IMAGETAG="latest"
+cleanCreds
 checkPrereqs
 networkDown
 docker stop $(docker ps -aq)

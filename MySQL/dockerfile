@@ -1,0 +1,26 @@
+FROM mysql:5.7.22
+
+MAINTAINER RICK
+
+ENV MYSQL_ROOT_PASSWORD 123456
+ENV MYSQL_DATABASE my_db 
+ENV MYSQL_USER Jim
+ENV MYSQL_PASSWORD 123456
+
+RUN echo " \
+     use mysql; \
+     grant all privileges on \`my_db\`.* to 'Jim'@'%' identified by '123456'; \
+     flush privileges; \
+     use my_db; \
+     CREATE TABLE IF NOT EXISTS \`userinfo\`( \
+       \`id\` INT UNSIGNED AUTO_INCREMENT,\
+       \`SourceId\` VARCHAR(100) NOT NULL,\
+       \`ReceiveId\` VARCHAR(40) NOT NULL,\
+       \`ServerId\` VARCHAR(40) NOT NULL,\
+       \`Value\` VARCHAR(100) NOT NULL,\
+       \`Tx_Id\` VARCHAR(64) NOT NULL,\
+       \`MyTime\` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,\
+       \`Flag\` boolean  NOT NULL,\
+       PRIMARY KEY ( \`id\` )\
+     )ENGINE=InnoDB DEFAULT CHARSET=utf8;\
+   update userinfo set Flag = True where ReceiveId = 'b' and Flag = false;" > /docker-entrypoint-initdb.d/init.sql 
