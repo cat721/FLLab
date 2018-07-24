@@ -42,6 +42,7 @@ function replacePrivateKey() {
   cp network-config-temple.yaml network-config.yaml
 
   sed $OPTS "s/ORG1PRIVATEKEY/${ADMIN_PRIV_KEY}/g" network-config.yaml
+  sed $OPTS "s/localhost/192.168.1.205/g" network-config.yaml
 
 ##config org2 network config 
   cd "$CURRENT_DIR"
@@ -58,6 +59,7 @@ function replacePrivateKey() {
   cp network-config-temple.yaml network-config.yaml
 
   sed $OPTS "s/ORG1PRIVATEKEY/${ADMIN_PRIV_KEY}/g" network-config.yaml
+  sed $OPTS "s/localhost/192.168.1.205/g" network-config.yaml
 
 ##config org3 network config
   cd "$CURRENT_DIR"
@@ -74,6 +76,7 @@ function replacePrivateKey() {
   cp network-config-temple.yaml network-config.yaml
 
   sed $OPTS "s/ORG1PRIVATEKEY/${ADMIN_PRIV_KEY}/g" network-config.yaml
+  sed $OPTS "s/localhost/192.168.1.205/g" network-config.yaml
 
 
   # If MacOSX, remove the temporary backup of the docker-compose file

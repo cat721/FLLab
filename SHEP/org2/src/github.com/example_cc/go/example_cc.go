@@ -16,188 +16,109 @@ limitations under the License.
 
 package main
 
-
 import (
+	"encoding/json"
 	"fmt"
+
 	"strconv"
+
+	"time"
 
 	"github.com/hyperledger/fabric/core/chaincode/shim"
 	pb "github.com/hyperledger/fabric/protos/peer"
 )
 
-var logger = shim.NewLogger("example_cc0")
-
 // SimpleChaincode example simple Chaincode implementation
 type SimpleChaincode struct {
 }
 
-func (t *SimpleChaincode) Init(stub shim.ChaincodeStubInterface) pb.Response  {
-	logger.Info("########### example_cc0 Init ###########")
-
-	_, args := stub.GetFunctionAndParameters()
-	var A, B string    // Entities
-	var Aval, Bval int // Asset holdings
-	var err error
-
-	// Initialize the chaincode
-	A = args[0]
-	Aval, err = strconv.Atoi(args[1])
-	if err != nil {
-		return shim.Error("Expecting integer value for asset holding")
-	}
-	B = args[2]
-	Bval, err = strconv.Atoi(args[3])
-	if err != nil {
-		return shim.Error("Expecting integer value for asset holding")
-	}
-	logger.Info("Aval = %d, Bval = %d\n", Aval, Bval)
-
-	// Write the state to the ledger
-	err = stub.PutState(A, []byte(strconv.Itoa(Aval)))
-	if err != nil {
-		return shim.Error(err.Error())
-	}
-
-	err = stub.PutState(B, []byte(strconv.Itoa(Bval)))
-	if err != nil {
-		return shim.Error(err.Error())
-	}
-
+func (t *SimpleChaincode) Init(stub shim.ChaincodeStubInterface) pb.Response {
+	fmt.Println("ex02 Init")
 	return shim.Success(nil)
-
-
 }
 
-// Transaction makes payment of X units from A to B
 func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface) pb.Response {
-	logger.Info("########### example_cc0 Invoke ###########")
-
+	fmt.Println("ex02 Invoke")
 	function, args := stub.GetFunctionAndParameters()
-	
-	if function == "delete" {
-		// Deletes an entity from its state
-		return t.delete(stub, args)
-	}
-
-	if function == "query" {
-		// queries an entity state
+	if function == "invoke" {
+		// Make payment of X units from A to B
+		return t.invoke(stub, args)
+	} else if function == "query" {
 		return t.query(stub, args)
 	}
-	if function == "move" {
-		// Deletes an entity from its state
-		return t.move(stub, args)
-	}
 
-	logger.Errorf("Unknown action, check the first argument, must be one of 'delete', 'query', or 'move'. But got: %v", args[0])
-	return shim.Error(fmt.Sprintf("Unknown action, check the first argument, must be one of 'delete', 'query', or 'move'. But got: %v", args[0]))
+	return shim.Error("Invalid invoke function name. Expecting \"invoke\" \"query\"")
 }
 
-func (t *SimpleChaincode) move(stub shim.ChaincodeStubInterface, args []string) pb.Response {
-	// must be an invoke
-	var A, B string    // Entities
-	var Aval, Bval int // Asset holdings
-	var X int          // Transaction value
-	var err error
+func (t *SimpleChaincode) invoke(stub shim.ChaincodeStubInterface, args []string) pb.Response {
+	var SourceId, ReceiveId, ServerId string // Entities
+	var value string
 
-	if len(args) != 3 {
-		return shim.Error("Incorrect number of arguments. Expecting 4, function followed by 2 names and 1 value")
+	if len(args) != 4 {
+		return shim.Error("Incorrect number of arguments. Expecting 4")
 	}
 
-	A = args[0]
-	B = args[1]
-
-	// Get the state from the ledger
-	// TODO: will be nice to have a GetAllState call to ledger
-	Avalbytes, err := stub.GetState(A)
+	SourceId = args[0]
+	ReceiveId = args[1]
+	ServerId = args[2]
+	value = args[3]
+	IdIndexKey, err := stub.CreateCompositeKey("DemoType", []string{SourceId, ReceiveId, ServerId})
 	if err != nil {
-		return shim.Error("Failed to get state")
+		return shim.Error("Failed to create compositeKey")
 	}
-	if Avalbytes == nil {
-		return shim.Error("Entity not found")
-	}
-	Aval, _ = strconv.Atoi(string(Avalbytes))
 
-	Bvalbytes, err := stub.GetState(B)
+	err = stub.PutState(IdIndexKey, []byte(value))
 	if err != nil {
-		return shim.Error("Failed to get state")
+		return shim.Error("Fail to put state")
 	}
-	if Bvalbytes == nil {
-		return shim.Error("Entity not found")
-	}
-	Bval, _ = strconv.Atoi(string(Bvalbytes))
 
-	// Perform the execution
-	X, err = strconv.Atoi(args[2])
+	type msg struct {
+		SourceId  string
+		ReceiveId string
+		ServerId  string
+		Value     string
+		Tx_Id     string
+		Time      string
+	}
+	mytime, _ := stub.GetTxTimestamp()
+	loc, _ := time.LoadLocation("Asia/Chongqing")
+	m := msg{
+		SourceId:  SourceId,
+		ReceiveId: ReceiveId,
+		ServerId:  ServerId,
+		Value:     value,
+		Tx_Id:     stub.GetTxID(),
+		Time:      time.Unix(mytime.Seconds, 0).In(loc).Format("2006-01-02 15:04:05"),
+	}
+	msgByte, err := json.Marshal(m)
 	if err != nil {
-		return shim.Error("Invalid transaction amount, expecting a integer value")
+		return shim.Error("unable to marshal")
 	}
-	Aval = Aval - X
-	Bval = Bval + X
-	logger.Infof("Aval = %d, Bval = %d\n", Aval, Bval)
-
-	// Write the state back to the ledger
-	err = stub.PutState(A, []byte(strconv.Itoa(Aval)))
-	if err != nil {
-		return shim.Error(err.Error())
-	}
-
-	err = stub.PutState(B, []byte(strconv.Itoa(Bval)))
-	if err != nil {
-		return shim.Error(err.Error())
-	}
-
-        return shim.Success(nil);
+	stub.SetEvent("testWrite", msgByte)
+	return shim.Success(msgByte)
 }
 
-// Deletes an entity from state
-func (t *SimpleChaincode) delete(stub shim.ChaincodeStubInterface, args []string) pb.Response {
-	if len(args) != 1 {
-		return shim.Error("Incorrect number of arguments. Expecting 1")
-	}
-
-	A := args[0]
-
-	// Delete the key from the state in ledger
-	err := stub.DelState(A)
-	if err != nil {
-		return shim.Error("Failed to delete state")
-	}
-
-	return shim.Success(nil)
-}
-
-// Query callback representing the query of a chaincode
 func (t *SimpleChaincode) query(stub shim.ChaincodeStubInterface, args []string) pb.Response {
-
-	var A string // Entities
-	var err error
-
-	if len(args) != 1 {
-		return shim.Error("Incorrect number of arguments. Expecting name of the person to query")
+	if len(args) > 3 {
+		return shim.Error("Incorrect number of arguments. Expecting smaller than 3")
 	}
 
-	A = args[0]
-
-	// Get the state from the ledger
-	Avalbytes, err := stub.GetState(A)
+	DemoIterator, err := stub.GetStateByPartialCompositeKey("DemoType", args)
 	if err != nil {
-		jsonResp := "{\"Error\":\"Failed to get state for " + A + "\"}"
-		return shim.Error(jsonResp)
+		return shim.Error(err.Error())
 	}
-
-	if Avalbytes == nil {
-		jsonResp := "{\"Error\":\"Nil amount for " + A + "\"}"
-		return shim.Error(jsonResp)
+	defer DemoIterator.Close()
+	var i int
+	i = 0
+	for i = 0; DemoIterator.HasNext(); i++ {
+		DemoIterator.Next()
 	}
-
-	jsonResp := "{\"Name\":\"" + A + "\",\"Amount\":\"" + string(Avalbytes) + "\"}"
-	logger.Infof("Query Response:%s\n", jsonResp)
-	return shim.Success(Avalbytes)
+	return shim.Success([]byte(strconv.Itoa(i)))
 }
 
 func main() {
 	err := shim.Start(new(SimpleChaincode))
 	if err != nil {
-		logger.Errorf("Error starting Simple chaincode: %s", err)
+		fmt.Printf("Error starting Simple chaincode: %s", err)
 	}
 }

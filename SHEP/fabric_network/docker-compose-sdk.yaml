@@ -4,7 +4,7 @@ services:
 
   org1_sdk:
     container_name: org1_sdk
-    image: fabric:sdk
+    image: fabric/sdk:0.1
     ports: 
       - 4000:4000
     volumes:
@@ -13,12 +13,19 @@ services:
       - ../org1/src/:/FLLab/org/artifacts/src/
       - ./channel-artifacts/channel.tx:/FLLab/org/artifacts/channel/channel.tx
       - ./crypto-config/:/FLLab/org/artifacts/channel/crypto-config/
+      - ./bootstrap.sh:/FLLab/org/bootstrap.sh
+    environment:
+      - NODE_ROLE=create
+      - NODE_NAME=peer0
+      - NODE_ORG=Org1
+      - NODE_INIT_USER=Jim1
+      - NODE_FULLNAME=peer0.org1.example.com
     working_dir: /FLLab/org
-    command: node app
+    command: /bin/bash bootstrap.sh 
 
   org2_sdk:
     container_name: org2_sdk
-    image: fabric:sdk
+    image: fabric/sdk:0.1
     ports:
       - 4001:4000
     volumes:
@@ -27,12 +34,19 @@ services:
       - ../org2/src/:/FLLab/org/artifacts/src/
       - ./channel-artifacts/channel.tx:/FLLab/org/artifacts/channel/channel.tx
       - ./crypto-config/:/FLLab/org/artifacts/channel/crypto-config/
+      - ./bootstrap.sh:/FLLab/org/bootstrap.sh
+    environment:
+      - NODE_ROLE=join
+      - NODE_NAME=peer0
+      - NODE_ORG=Org2
+      - NODE_INIT_USER=Jim2
+      - NODE_FULLNAME=peer0.org2.example.com
     working_dir: /FLLab/org
-    command: node app
+    command: /bin/bash bootstrap.sh 
 
   org3_sdk:
     container_name: org3_sdk
-    image: fabric:sdk
+    image: fabric/sdk:0.1
     ports:
       - 4002:4000
     volumes:
@@ -41,5 +55,13 @@ services:
       - ../org3/src/:/FLLab/org/artifacts/src/
       - ./channel-artifacts/channel.tx:/FLLab/org/artifacts/channel/channel.tx
       - ./crypto-config/:/FLLab/org/artifacts/channel/crypto-config/
+      - ./bootstrap.sh:/FLLab/org/bootstrap.sh
+    environment:
+      - NODE_ROLE=join
+      - NODE_NAME=peer0
+      - NODE_ORG=Org3
+      - NODE_INIT_USER=Jim3
+      - NODE_FULLNAME=peer0.org3.example.com
     working_dir: /FLLab/org
-    command: node app
+    command: /bin/bash bootstrap.sh 
+

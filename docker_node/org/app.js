@@ -39,8 +39,8 @@ var instantiate = require('./app/instantiate-chaincode.js');
 var invoke = require('./app/invoke-transaction.js');
 var query = require('./app/query.js');
 var querySQL = require('./app/querySQL.js');
-var host = process.env.HOST || hfc.getConfigSetting('host');
-var port = process.env.PORT || hfc.getConfigSetting('port');
+var host = hfc.getConfigSetting('host');
+var port = hfc.getConfigSetting('port');
 ///////////////////////////////////////////////////////////////////////////////
 //////////////////////////////// SET CONFIGURATONS ////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
@@ -190,6 +190,7 @@ app.post('/data', async function(req, res) {
 	logger.debug('End Time: ' + req.body.ETime);
 	var queryArgs = {
 		"Hostname": req.body.Hostname,
+		"Port": req.body.Port,
 		"User": req.body.User,
 		"Password": req.body.Password,
 		"SourceID": req.body.SourceID,

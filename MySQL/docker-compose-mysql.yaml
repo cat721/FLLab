@@ -1,0 +1,10 @@
+version: '2'
+
+services:
+
+  mysql:
+    image: fabric/mysql:5.7.22
+    ports:
+      - "12321:3306"
+    volumes:
+      - "./data/:/var/lib/mysql/"

@@ -111,7 +111,7 @@ var instantiateChaincode = async function(peers, channelName, chaincodeName, cha
 						clearTimeout(event_timeout);
 
 						if (code !== 'VALID') {
-							let message = until.format('The chaincode instantiate transaction was invalid, code:%s',code);
+							let message = util.format('The chaincode instantiate transaction was invalid, code:%s',code);
 							logger.error(message);
 							reject(new Error(message));
 						} else {

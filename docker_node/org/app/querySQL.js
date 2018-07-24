@@ -83,6 +83,7 @@ var queryMySQL = async function(queryArgs, res) {
 		var connection = mysql.createConnection({
 			host: queryArgs.Hostname,
 			user: queryArgs.User,
+			port: queryArgs.Port,
 			password: queryArgs.Password,
 			database: dbName
 		});
