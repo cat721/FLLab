@@ -2,102 +2,94 @@
 
 ## About the Structure of This Project
 
-  - ShanghaiElectricPower
+This project is funcationally the same as the master branch, the only difference being all of the programs
+now runs in docker containers. This makes the program more portable and easier to deploy.
 
-    3 peers, 1 org
+The directories and their functions are as follows:
 
-  - org1, org2, org3
+  - SHEP: the folder that contains docker-compose file *docker-compose.yaml* to start the fabric network. The crypto
+    config files are generated beforehand using the *generate.sh* script.
 
-    3 peers, 3 orgs (3 Node.js SDK)
+  - MySQL: the folder that contains the docker-compose file *docker-compose-mysql.yaml* to start mysql and
+    the dockerfile *dockerfile*, which is a simple modification upon the official mysql image (5.7.22)
 
-## How to Run Test
+  - docker_node: the folder that contains the source codes (node.js) to provide the Web service. (Note the
+    docker-compose file *docker-compose-sdk.yaml* is located in the SHEP folder. A bootstrap script is started
+    after the container is created, the main function of this script is to create channel and join channel 
+    (using node sdk). Then the node that created channel will run *listener.js* to write transaction data to the
+    database.
 
-General steps to test the functionality of fabric based network and relevant APIs are similar, but due to different
-network topology, there are minor differences
+  - test: some test scripts to test the web API, using **curl** to query and **jq** to parse JSON data.
+  
+## Run the Network and Web Services
 
-### ShanghaiElectricPower
+1. Start the Fabric Network
 
-For **ShanghaiElectricPower**, first run *bash generate.sh && bash start_network.sh* under fabric_network directory to start the network,
-then start the application server using *node app.js*.
-Next, run *bash a.sh* under the *oldTest* directory to create and join application channel.
-
-#### Working With MySQL Database
-
-To record the transactions into MySQL database and to query them using Web API later, one must ensure that mysql is running and listening
-on the default port. The database named **my_db** must be prepared and a table named **userinfo** must be created in that database.
-The schema of this database is as follows:
-
-```
-CREATE TABLE IF NOT EXISTS `userinfo`(
-    `id` INT UNSIGNED AUTO_INCREMENT,
-    `SourceId` VARCHAR(100) NOT NULL,
-    `ReceiveId` VARCHAR(40) NOT NULL,
-    `ServerId` VARCHAR(40) NOT NULL,
-    `Value` VARCHAR(100) NOT NULL,
-    `Tx_Id` VARCHAR(64) NOT NULL,
-    `MyTime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    `Flag` boolean  NOT NULL,
-    PRIMARY KEY ( `id` )
-    )ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-update userinfo set Flag = True where ReceiveId = 'b' and Flag = false;
-```
-
-What's more, a listener service must be running to listen to changes on the channel and write changes into MySQL database.
-Run *node listener.js* to start this service.
-
-Now we are ready to test the Invoke and Query Web APIs.
-
-#### Testing Web API
-
-To test web APIs, run *bash testAll.sh* would test Invoke API first and then test Query API. Please refer to those API documentations
-for detailed explanation to the return format.
-
-### Three Orgs
-
-In this project there are three orgs, and org1 is responsible for starting the fabric network. The network starting sequence is very
-similar to the first one, the only difference being the application channel only needs to be created once. The other orgs
-can just join it. Below is the process of bring up the network till it is ready for API testing.
-
-#### Bring up the Network
+First under the SHEP folder, run
 
 ```
-# Shell 1
-cd org1/fabric_network # from the root directory
-bash generate.sh && bash start_network.sh
-
-# Shell 2
-cd org1/fabric_network # from the root directory
-PORT=4000 node app.js
-
-# Shell 3
-cd org1/fabric_network # from the root directory
-bash test/enroll.sh # register user
-node test/start.js # create application channel `mychannel'
-node test/start1.js # join peer0.org1.example.com to `mychannel'
-
-# Shell 4
-cd org2/fabric_network # from the root directory
-PORT=4001 node app.js
-
-# Shell 5
-cd org2/fabric_network # from the root directory
-bash test/enroll.sh # register user
-node start1.js # join peer0.org2.example.com to `mychannel'
-
-# Shell 6
-cd org3/fabric_network # from the root directory
-PORT=4002 node app.js
-
-# Shell 7
-cd org3/fabric_network # from the root directory
-bash test/enroll.sh # register user
-node start1.js # join peer0.org3.example.com to `mychannel'
+bash generate.sh
 ```
+to generate the crypto files. This step is optional, if the secret keys and certificates have already been generated
+this can be skipped.
 
-Also, for the database to work, we need to run *node listener.js* under org1. (Theoretically the three nodes are equally good
-to run listener, but up till now only that under org1 will work.)
+Then run
+```
+docker-compose -f docker-compose.yaml up
+```
+to start the fabric network.
 
-#### Testing Web API
+2. Start MySQL Database Service
 
-This process is very similar to the previous project, just run *bash testAll.sh* under all three org directories.
+If image fabric/mysql:5.7.22 have not been generated, under the MySQL folder,
+run
+```
+docker build -t fabric/mysql:5.7.11 .
+```
+And then run
+```
+docker-compose -f docker-compose-mysql.yaml up
+```
+to start the MySQL database.
+
+Note the database files are mapped from the *data* directory in the MySQL folder to increase performance.
+
+Also note that MySQL takes about 45s to finish the initiating process (ready for connection after 45s the 
+docker-compose command starts).
+
+3. Start the Web Service
+
+In the SHEP folder, run
+```
+docker-compose -f docker-compose-sdk.yaml up
+```
+to start the web service.
+
+## Run the Test
+
+Once the database, fabric network, and web serivce are running, we can test the web service using the
+scripts from the test folder.
+
+Run
+```
+source EnrollTestOrg{123}.sh
+```
+to enroll in according orgs. The source command is necessary as the access token is saved as
+local shell variables.
+
+Then run
+```
+source InvokeTestOrg{123}.sh
+```
+to test invoke APIs.
+
+Finally run
+```
+source SqlTestOrg{123}.sh
+```
+to test SQL APIs.
+
+## More information
+
+If you are looking for more detailed information about this project, please refer to **README.md** in
+the master branch. If that does not help you either, consider contact the team leader *cat721* at github.com.
