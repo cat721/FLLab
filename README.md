@@ -21,6 +21,18 @@ The directories and their functions are as follows:
 
   - test: some test scripts to test the web API, using **curl** to query and **jq** to parse JSON data.
   
+
+## Custom Docker Images Used in This Project
+
+  - fabric/sdk:0.1 
+
+    used to start node.js sdk for hyperledger fabric, and to start our own web service. It is based on node image
+    version 8.11.3
+
+  - fabirc/mysql:0.1
+
+    used to start mysql database. It is based on mysql image version 5.7.22
+   
 ## Run the Network and Web Services
 
 1. Start the Fabric Network
@@ -64,6 +76,8 @@ In the SHEP folder, run
 docker-compose -f docker-compose-sdk.yaml up
 ```
 to start the web service.
+
+( This docker-compose file use node image 8.11.3 )
 
 ## Run the Test
 
