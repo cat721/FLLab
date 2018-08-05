@@ -20,6 +20,7 @@ services:
       - NODE_ORG=Org1
       - NODE_INIT_USER=Jim1
       - NODE_FULLNAME=peer0.org1.example.com
+      - LISTEN_HOSTNAME=192.168.1.203
     working_dir: /FLLab/org
     command: /bin/bash bootstrap.sh 
 
