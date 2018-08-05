@@ -39,7 +39,7 @@ Before start the network, you should install docker & docker-compose.
 
 1. Start the Fabric Network
 
-First under the SHEP folder, run
+First under the SHEP/fabric_network folder, run
 
 ```
 bash generate.sh
