@@ -56,7 +56,7 @@ to start the fabric network.
 If image fabric/mysql:5.7.22 have not been generated, under the MySQL folder,
 run
 ```
-docker build -t fabric/mysql:5.7.11 .
+docker build -t fabric/mysql:5.7.22 .
 ```
 And then run
 ```
