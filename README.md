@@ -35,6 +35,8 @@ The directories and their functions are as follows:
    
 ## Run the Network and Web Services
 
+Before start the network, you should install docker & dockercompoes.
+
 1. Start the Fabric Network
 
 First under the SHEP folder, run
@@ -70,8 +72,12 @@ Also note that MySQL takes about 45s to finish the initiating process (ready for
 docker-compose command starts).
 
 3. Start the Web Service
+In docker_node folder, run
+```
+docker build -t fabric/sdk:0.1
+```
 
-In the SHEP folder, run
+In the SHEP/fabric_network folder, run
 ```
 docker-compose -f docker-compose-sdk.yaml up
 ```
