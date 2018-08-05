@@ -35,7 +35,7 @@ The directories and their functions are as follows:
    
 ## Run the Network and Web Services
 
-Before start the network, you should install docker & dockercompoes.
+Before start the network, you should install docker & docker-compose.
 
 1. Start the Fabric Network
 
@@ -72,6 +72,7 @@ Also note that MySQL takes about 45s to finish the initiating process (ready for
 docker-compose command starts).
 
 3. Start the Web Service
+
 In docker_node folder, run
 ```
 docker build -t fabric/sdk:0.1
