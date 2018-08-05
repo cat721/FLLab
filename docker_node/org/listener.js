@@ -33,10 +33,11 @@ var connection = mysql.createConnection({
 connection.connect();
 
 var channelName="mychannel"
+var listen_hostname = process.env.LISTEN_HOSTNAME;
 helper.getClientForOrg(process.env.NODE_ORG,process.env.NODE_INIT_USER).then((client)=>{
     let event_hub = client.newEventHub();
   const data=fs.readFileSync(path.join(__dirname,"artifacts/channel/crypto-config/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt"))
-    event_hub.setPeerAddr('grpcs://192.168.1.205:7053',{
+    event_hub.setPeerAddr('grpcs://'+listen_hostname+':7053',{
       'pem':Buffer.from(data).toString(),
       'ssl-target-name-override':'peer0.org1.example.com'
     });
