@@ -88,11 +88,11 @@ function replacePrivateKey() {
 }
 
 function generateCerts() {
-  which cryptogen
-  if [ "$?" -ne 0 ]; then
-    echo "cryptogen tool not found. exiting"
-    exit 1
-  fi
+ # which cryptogen
+ # if [ "$?" -ne 0 ]; then
+ #   echo "cryptogen tool not found. exiting"
+ #   exit 1
+ # fi
   echo
   echo "##########################################################"
   echo "##### Generate certificates using cryptogen tool #########"
@@ -115,11 +115,11 @@ function generateCerts() {
 }
 
 function generateChannelArtifacts() {
-  which configtxgen
-  if [ "$?" -ne 0 ]; then
-    echo "configtxgen tool not found. exiting"
-    exit 1
-  fi
+#  which configtxgen
+#  if [ "$?" -ne 0 ]; then
+#    echo "configtxgen tool not found. exiting"
+#    exit 1
+#  fi
   if [ -d "channel-artifacts" ]; then
     rm -Rf channel-artifacts
   fi
