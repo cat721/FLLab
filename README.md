@@ -39,7 +39,8 @@ Before start the network, you should install docker & docker-compose.
 
 1. Start the Fabric Network
 
-First under the SHEP/fabric_network folder, run
+First replace the 192.168.1.205 to your localhost in generate.sh
+under the SHEP/fabric_network folder, then run
 
 ```
 bash generate.sh
@@ -73,6 +74,10 @@ docker-compose command starts).
 
 3. Start the Web Service
 
+First replace 192.168.1.205 in SHEP/fabric_network/bootstrap.sh to your localhost.
+
+Second,replace 192.168.1.202 in in SHEP/fabric_network to docker-compose-sdk.yaml to your localhost.
+ 
 In docker_node folder, run
 ```
 docker build -t fabric/sdk:0.1 .
