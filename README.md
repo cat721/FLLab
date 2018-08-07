@@ -75,7 +75,7 @@ docker-compose command starts).
 
 In docker_node folder, run
 ```
-docker build -t fabric/sdk:0.1
+docker build -t fabric/sdk:0.1 .
 ```
 
 In the SHEP/fabric_network folder, run
