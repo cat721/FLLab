@@ -180,19 +180,19 @@ app.post('/channels/:channelName/chaincodes/:chaincodeName', async function(req,
 // MySQL Query operation
 app.post('/data', async function(req, res) {
 	logger.debug('================ QUERY MySQL ======================');
-	logger.debug('host: ' + req.body.Hostname);
-	logger.debug('user: ' + req.body.User);
-	logger.debug('passwd: ' + req.body.Password);
+	logger.debug('host: ' + process.env.MYSQL_HOSTNAME);
+	logger.debug('user: ' + rprocess.env.MYSQL_USER);
+	logger.debug('passwd: ' + process.env.MYSQL_PASSWORD);
 	logger.debug('SourceID: ' + req.body.SourceID);
 	logger.debug('ReceiveID: ' + req.body.ReceiveID);
 	logger.debug('ServerID: ' + req.body.ServerID);
 	logger.debug('Start Time: ' + req.body.STime);
 	logger.debug('End Time: ' + req.body.ETime);
 	var queryArgs = {
-		"Hostname": req.body.Hostname,
-		"Port": req.body.Port,
-		"User": req.body.User,
-		"Password": req.body.Password,
+		"Hostname": process.env.MYSQL_HOSTNAME,
+		"Port": process.env.MYSQL_POR,
+		"User": process.env.MYSQL_USER,
+		"Password": process.env.MYSQL_PASSWORD,
 		"SourceID": req.body.SourceID,
 		"ReceiveID": req.body.ReceiveID,
 		"ServerID": req.body.ServerID,
