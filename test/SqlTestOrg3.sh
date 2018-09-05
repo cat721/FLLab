@@ -76,10 +76,6 @@ TRX_ID=$(curl -s -X POST \
   -H "authorization: Bearer $ORG3_TOKEN" \
   -H "content-type: application/json" \
   -d '{
-	"Hostname":"192.168.1.205",
-	"Port": "12321",
-	"User":"Jim",
-	"Password":"123456",
 	"SourceID":"a",
 	"ReceiveID":"b",
 	"ServerID":"a"
@@ -95,10 +91,6 @@ TRX_ID=$(curl -s -X POST \
   -H "authorization: Bearer $ORG3_TOKEN" \
   -H "content-type: application/json" \
   -d '{
-	"Hostname":"192.168.1.205",
-	"Port": "12321",
-	"User":"Jim",
-	"Password":"123456",
 	"SourceID":"a",
 	"ReceiveID":"b",
 	"ServerID":"a"
@@ -114,10 +106,6 @@ TRX_ID=$(curl -s -X POST \
   -H "authorization: Bearer $ORG3_TOKEN" \
   -H "content-type: application/json" \
   -d "{
-	\"Hostname\":\"192.168.1.205\",
-	\"Port\": \"12321\",
-	\"User\":\"Jim\",
-	\"Password\":\"123456\",
 	\"SourceID\":\"a\",
 	\"ReceiveID\":\"b\",
 	\"ServerID\":\"a\",
@@ -132,10 +120,6 @@ TRX_ID=$(curl -s -X POST \
   -H "authorization: Bearer $ORG3_TOKEN" \
   -H "content-type: application/json" \
   -d "{
-	\"Hostname\":\"192.168.1.205\",
-	\"Port\": \"12321\",
-	\"User\":\"Jim\",
-	\"Password\":\"123456\",
 	\"SourceID\":\"a\",
 	\"ReceiveID\":\"b\",
 	\"ServerID\":\"a\",
@@ -153,10 +137,6 @@ TRX_ID=$(curl -s -X POST \
   -H "authorization: Bearer $ORG3_TOKEN" \
   -H "content-type: application/json" \
   -d "{
-	\"Hostname\":\"192.168.1.205\",
-	\"Port\": \"12321\",
-	\"User\":\"Jim\",
-	\"Password\":\"123456\",
 	\"SourceID\":\"a\",
 	\"ReceiveID\":\"b\",
 	\"ServerID\":\"a\",
@@ -172,10 +152,6 @@ TRX_ID=$(curl -s -X POST \
   -H "authorization: Bearer $ORG3_TOKEN" \
   -H "content-type: application/json" \
   -d "{
-	\"Hostname\":\"192.168.1.205\",
-	\"Port\": \"12321\",
-	\"User\":\"Jim\",
-	\"Password\":\"123456\",
 	\"SourceID\":\"a\",
 	\"ServerID\":\"a\"
   }")
@@ -189,10 +165,6 @@ TRX_ID=$(curl -s -X POST \
   -H "authorization: Bearer $ORG3_TOKEN" \
   -H "content-type: application/json" \
   -d "{
-	\"Hostname\":\"192.168.1.205\",
-	\"Port\": \"12321\",
-	\"User\":\"nosuchuser\",
-	\"Password\":\"password\",
 	\"SourceID\":\"a\",
 	\"ReceiveID\":\"b\",
 	\"ServerID\":\"a\",
