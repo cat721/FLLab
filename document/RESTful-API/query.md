@@ -7,9 +7,6 @@ crul -s -X POST \
 http://localhost:4000/data \
 -H "content-type: application/json" \
 -d "{
-	\"Hostname\":\"locathost\",
-	\"User\":\"newuser\",
-	\"Password\":\"password\",
 	\"SourceID\":\"sourceid\",
 	\"ReceiveID\":\"receiveid\",
 	\"ServerID\":\"serverid\",
@@ -22,9 +19,6 @@ http://localhost:4000/data \
 
 | 参数 | 可选 |含义 |
 | :------ | :------- | :------ |
-| Hostname  | 必选 | mysql服务器所在的ip地址 |
-| User      | 必选 | mysql登录的用户名|
-| Password  | 必选 | mysql登录的口令 |
 | SourceID  | 必选 | 交易的来源ID | % TODO: 与潘业达确认
 | ReceiveID | 可选 | 交易的接收者ID | % TODO: 与潘业达确认
 | ServerID  | 可选 | 服务器ID | % TODO: 与潘业达确认
