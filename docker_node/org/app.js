@@ -181,7 +181,7 @@ app.post('/channels/:channelName/chaincodes/:chaincodeName', async function(req,
 app.post('/data', async function(req, res) {
 	logger.debug('================ QUERY MySQL ======================');
 	logger.debug('host: ' + process.env.MYSQL_HOSTNAME);
-	logger.debug('user: ' + rprocess.env.MYSQL_USER);
+	logger.debug('user: ' + process.env.MYSQL_USER);
 	logger.debug('passwd: ' + process.env.MYSQL_PASSWORD);
 	logger.debug('SourceID: ' + req.body.SourceID);
 	logger.debug('ReceiveID: ' + req.body.ReceiveID);
