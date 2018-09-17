@@ -14,6 +14,13 @@ echo
 echo "ENROLL USER $NODE_INIT_USER IN $NODE_ORG END"
 echo
 
+export MYSQL_HOSTNAME=192.168.1.205
+export MYSQL_PORT=12321
+export MYSQL_USER=Jim
+export MYSQL_PASSWORD=123456
+export MYSQL_DATABASE=my_db
+export MYSQL_TABLE=userinfo
+
 if [ "$NODE_ROLE" = "create" ]; then
 	echo
 	echo "CREATE CHANNEL START"
@@ -25,12 +32,6 @@ if [ "$NODE_ROLE" = "create" ]; then
 
 	echo
 	echo "MYSQL LISTENER START"
-	export MYSQL_HOSTNAME=192.168.1.205
-	export MYSQL_PORT=12321
-	export MYSQL_USER=Jim
-	export MYSQL_PASSWORD=123456
-	export MYSQL_DATABASE=my_db
-	export MYSQL_TABLE=userinfo
 	node listener.js &
 	echo
 fi

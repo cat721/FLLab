@@ -45,7 +45,7 @@ helper.getClientForOrg(process.env.NODE_ORG,process.env.NODE_INIT_USER).then((cl
           "mycc","testWrite",
       (object) =>{
         var msg=JSON.parse(object.payload)
-        var  userAddSql = 'INSERT INTO userinfo (SourceId,ReceiveId,ServerId,Value,Tx_Id,MyTime,Flag) VALUES(?,?,?,?,?,?,?)'
+        var  userAddSql = 'INSERT INTO ' + process.env.MYSQL_TABLE + ' (SourceId,ReceiveId,ServerId,Value,Tx_Id,MyTime,Flag) VALUES(?,?,?,?,?,?,?)'
         var userAddSql_Params=[msg.SourceId,msg.ReceiveId,msg.ServerId,msg.Value,msg.Tx_Id,msg.Time,false]
         console.log(userAddSql_Params)
         connection.query(userAddSql,userAddSql_Params,function (err, result) {

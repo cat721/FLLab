@@ -2,24 +2,19 @@ FROM mysql:5.7.22
 
 MAINTAINER FLLab
 
-ENV MYSQL_ROOT_PASSWORD 123456
-ENV MYSQL_DATABASE my_db 
-ENV MYSQL_USER Jim
-ENV MYSQL_PASSWORD 123456
-
 EXPOSE 3306
 
 RUN echo " \
      use mysql; \
-     grant all privileges on \`my_db\`.* to 'Jim'@'%' identified by '123456'; \
+     grant all privileges on \`${MYSQL_DATABASE}\`.* to 'Jim'@'%' identified by '123456'; \
      flush privileges; \
-     use my_db; \
-     CREATE TABLE IF NOT EXISTS \`userinfo\`( \
+     use ${MYSQL_DATABASE}; \
+     CREATE TABLE IF NOT EXISTS \`${MYSQL_TABLE}\`( \
        \`id\` INT UNSIGNED AUTO_INCREMENT,\
        \`SourceId\` VARCHAR(100) NOT NULL,\
        \`ReceiveId\` VARCHAR(40) NOT NULL,\
        \`ServerId\` VARCHAR(40) NOT NULL,\
-       \`Value\` VARCHAR(100) NOT NULL,\
+       \`Value\` TEXT NOT NULL,\
        \`Tx_Id\` VARCHAR(64) NOT NULL,\
        \`MyTime\` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,\
        \`Flag\` boolean  NOT NULL,\

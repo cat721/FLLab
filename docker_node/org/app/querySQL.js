@@ -73,13 +73,13 @@ var queryMySQL = async function(queryArgs, res) {
 			timeClause += ('UNIX_TIMESTAMP(MyTime) >= UNIX_TIMESTAMP(\'' + queryArgs.STime + '\')');
 			timeClause += (' and UNIX_TIMESTAMP(MyTime) <= UNIX_TIMESTAMP(\'' + queryArgs.ETime + '\')');
 		}
-		var tableName = 'userinfo';
+		var tableName = process.env.MYSQL_TABLE;
 		var sqlQueryStmt = 'select SourceID, ReceiveID, ServerID, Value, Tx_Id, TIME_FORMAT(MyTime, "%T") as TxTime from ' + tableName + ' where ' + idClause + ' and ' + timeClause + ';'; 
 		var sqlUpdateStmt = 'update ' + tableName + ' set Flag = true where ' + idClause + ' and ' + timeClause + ';';
       logger.debug('query stmt is ' + sqlQueryStmt);
 
 		// connect to the db
-		var dbName = 'my_db';
+		var dbName = process.env.MYSQL_DATABASE;
 		var connection = mysql.createConnection({
 			host: queryArgs.Hostname,
 			user: queryArgs.User,
