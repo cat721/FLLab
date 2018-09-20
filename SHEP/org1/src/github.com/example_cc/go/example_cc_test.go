@@ -16,11 +16,11 @@ limitations under the License.
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"testing"
 
 	"github.com/hyperledger/fabric/core/chaincode/shim"
-	"github.com/davecgh/go-spew/spew"
 )
 
 var SourceId = "123456"
@@ -48,28 +48,49 @@ func checkState(t *testing.T, stub *shim.MockStub, name string, value string) {
 	}
 }
 
-func checkQuery(t *testing.T, stub *shim.MockStub,name [][]byte, value string) {
+func checkQuerySuccess(t *testing.T, stub *shim.MockStub, name [][]byte) {
 	res := stub.MockInvoke("1", name)
 	if res.Status != shim.OK {
-		fmt.Println("Query", name, "failed", string(res.Message))
+		fmt.Println("Query failed", string(res.Message))
+		// spew.Dump(name)
 		t.FailNow()
 	}
 	if res.Payload == nil {
 		fmt.Println("Query", name, "failed to get value")
 		t.FailNow()
 	}
-	if string(res.Payload) != value {
-		fmt.Println("Query value", name,"result",string(res.Payload), "was not", value, "as expected")
+	if string(res.Payload) != "true" {
+		fmt.Println(string(res.Payload) + " doesnot equal 1")
 		t.FailNow()
 	}
 }
 
-func checkInvoke(t *testing.T, stub *shim.MockStub, args [][]byte) {
+func checkQueryError(t *testing.T, stub *shim.MockStub, name [][]byte) {
+	res := stub.MockInvoke("1", name)
+	if res.Status != shim.OK {
+		fmt.Println("Query failed", string(res.Message))
+		// spew.Dump(name)
+		t.FailNow()
+	}
+	if res.Payload == nil {
+		fmt.Println("Query", name, "failed to get value")
+		t.FailNow()
+	}
+	if string(res.Payload) != "false" {
+		fmt.Println(string(res.Payload) + " doesnot equal 0")
+		t.FailNow()
+	}
+}
+
+func checkInvoke(t *testing.T, stub *shim.MockStub, args [][]byte) string {
 	res := stub.MockInvoke("1", args)
 	if res.Status != shim.OK {
 		fmt.Println("Invoke", args, "failed", string(res.Message))
 		t.FailNow()
 	}
+	m := msg{}
+	json.Unmarshal(res.Payload, &m)
+	return m.Time
 }
 
 func TestExample02_Init(t *testing.T) {
@@ -85,11 +106,12 @@ func TestExample02_Invoke(t *testing.T) {
 
 	checkInit(t, stub, [][]byte{})
 
-	checkInvoke(t, stub, [][]byte{[]byte("invoke"), []byte(SourceId), []byte(ReceiveId), []byte(ServerId_1),[]byte("value")})
-	checkInvoke(t, stub, [][]byte{[]byte("invoke"), []byte(SourceId), []byte(ReceiveId), []byte(ServerId_2),[]byte("value")})
-	spew.Dump(stub.State)
-	checkQuery(t,stub,[][]byte{[]byte("query"),[]byte(SourceId)} ,"2") //ok
-	checkQuery(t,stub,[][]byte{[]byte("query"),[]byte(SourceId),[]byte(ReceiveId)} ,"2") //ok
-	checkQuery(t,stub,[][]byte{[]byte("query"),[]byte(SourceId),[]byte(ReceiveId),[]byte(ServerId_1)} ,"1") //ok
-	//checkQuery(t,stub,ServerId_1,"1") //fail
+	time1 := checkInvoke(t, stub, [][]byte{[]byte("invoke"), []byte(SourceId), []byte(ReceiveId), []byte(ServerId_1), []byte("value")})
+	time2 := checkInvoke(t, stub, [][]byte{[]byte("invoke"), []byte(SourceId), []byte(ReceiveId), []byte(ServerId_2), []byte("上港是冠军")})
+
+	// spew.Dump(stub.State)
+	checkQuerySuccess(t, stub, [][]byte{[]byte("query"), []byte(SourceId), []byte(ReceiveId), []byte(ServerId_1), []byte(time1), []byte("value")})
+	checkQueryError(t, stub, [][]byte{[]byte("query"), []byte(SourceId), []byte(ReceiveId), []byte(ServerId_1), []byte(time1), []byte("ErrorValue")})
+	checkQuerySuccess(t, stub, [][]byte{[]byte("query"), []byte(SourceId), []byte(ReceiveId), []byte(ServerId_2), []byte(time2), []byte("上港是冠军")})
+	checkQueryError(t, stub, [][]byte{[]byte("query"), []byte(SourceId), []byte(ReceiveId), []byte(ServerId_2), []byte(time2), []byte("恒大是冠军")})
 }

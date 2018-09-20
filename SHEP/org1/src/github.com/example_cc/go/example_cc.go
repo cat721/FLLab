@@ -19,17 +19,24 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-
-	"strconv"
-
 	"time"
 
 	"github.com/hyperledger/fabric/core/chaincode/shim"
+	"github.com/hyperledger/fabric/protos/ledger/queryresult"
 	pb "github.com/hyperledger/fabric/protos/peer"
 )
 
 // SimpleChaincode example simple Chaincode implementation
 type SimpleChaincode struct {
+}
+
+type msg struct {
+	SourceId  string
+	ReceiveId string
+	ServerId  string
+	Value     string
+	Tx_Id     string
+	Time      string
 }
 
 func (t *SimpleChaincode) Init(stub shim.ChaincodeStubInterface) pb.Response {
@@ -62,7 +69,11 @@ func (t *SimpleChaincode) invoke(stub shim.ChaincodeStubInterface, args []string
 	ReceiveId = args[1]
 	ServerId = args[2]
 	value = args[3]
-	IdIndexKey, err := stub.CreateCompositeKey("DemoType", []string{SourceId, ReceiveId, ServerId})
+
+	mytime, _ := stub.GetTxTimestamp()
+	loc, _ := time.LoadLocation("Asia/Chongqing")
+	timeKey := time.Unix(mytime.Seconds, 0).In(loc).Format("2006-01-02 15:04:05")
+	IdIndexKey, err := stub.CreateCompositeKey("DemoType", []string{SourceId, ReceiveId, ServerId, timeKey})
 	if err != nil {
 		return shim.Error("Failed to create compositeKey")
 	}
@@ -72,23 +83,13 @@ func (t *SimpleChaincode) invoke(stub shim.ChaincodeStubInterface, args []string
 		return shim.Error("Fail to put state")
 	}
 
-	type msg struct {
-		SourceId  string
-		ReceiveId string
-		ServerId  string
-		Value     string
-		Tx_Id     string
-		Time      string
-	}
-	mytime, _ := stub.GetTxTimestamp()
-	loc, _ := time.LoadLocation("Asia/Chongqing")
 	m := msg{
 		SourceId:  SourceId,
 		ReceiveId: ReceiveId,
 		ServerId:  ServerId,
 		Value:     value,
 		Tx_Id:     stub.GetTxID(),
-		Time:      time.Unix(mytime.Seconds, 0).In(loc).Format("2006-01-02 15:04:05"),
+		Time:      timeKey,
 	}
 	msgByte, err := json.Marshal(m)
 	if err != nil {
@@ -99,21 +100,23 @@ func (t *SimpleChaincode) invoke(stub shim.ChaincodeStubInterface, args []string
 }
 
 func (t *SimpleChaincode) query(stub shim.ChaincodeStubInterface, args []string) pb.Response {
-	if len(args) > 3 {
-		return shim.Error("Incorrect number of arguments. Expecting smaller than 3")
+	if len(args) != 5 {
+		return shim.Error("Incorrect number of arguments. Expecting 5")
 	}
 
-	DemoIterator, err := stub.GetStateByPartialCompositeKey("DemoType", args)
+	DemoIterator, err := stub.GetStateByPartialCompositeKey("DemoType", args[0:3])
 	if err != nil {
 		return shim.Error(err.Error())
 	}
 	defer DemoIterator.Close()
-	var i int
-	i = 0
-	for i = 0; DemoIterator.HasNext(); i++ {
-		DemoIterator.Next()
+	var item *queryresult.KV
+	if DemoIterator.HasNext() {
+		item, _ = DemoIterator.Next()
+	} else {
+		return shim.Error("cannot found such key")
 	}
-	return shim.Success([]byte(strconv.Itoa(i)))
+	resultByte, _ := json.Marshal(string(item.Value) == args[4])
+	return shim.Success(resultByte)
 }
 
 func main() {
