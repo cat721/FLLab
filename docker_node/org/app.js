@@ -206,3 +206,57 @@ app.post('/data', async function(req, res) {
 	  logger.error(message);
 	}
 });
+
+
+// Query on chaincode on target peers
+app.get('/channels/:channelName/chaincodes/:chaincodeName', async function(req, res) {
+    logger.debug('==================== QUERY BY CHAINCODE ==================');
+    var channelName = req.params.channelName;
+    var chaincodeName = req.params.chaincodeName;
+    let args = req.query.args;
+    let fcn = req.query.fcn;
+    let peer = req.query.peer;
+
+    logger.debug('channelName : ' + channelName);
+    logger.debug('chaincodeName : ' + chaincodeName);
+    logger.debug('fcn : ' + fcn);
+    logger.debug('args : ' + args);
+
+    if (!chaincodeName) {
+        res.json(getErrorMessage('\'chaincodeName\''));
+        return;
+    }
+    if (!channelName) {
+        res.json(getErrorMessage('\'channelName\''));
+        return;
+    }
+    if (!fcn) {
+        res.json(getErrorMessage('\'fcn\''));
+        return;
+    }
+    if (!args) {
+        res.json(getErrorMessage('\'args\''));
+        return;
+    }
+    args = args.replace(/'/g, '"');
+    args = JSON.parse(args);
+    logger.debug(args);
+
+    let message = await query.queryChaincode(peer, channelName, chaincodeName, args, fcn, req.username, req.orgname);
+    res.send(message);
+});
+
+// Query Get Transaction by Transaction ID
+app.get('/channels/:channelName/transactions/:trxnId', async function(req, res) {
+    logger.debug('================ GET TRANSACTION BY TRANSACTION_ID ======================');
+    logger.debug('channelName : ' + req.params.channelName);
+    let trxnId = req.params.trxnId;
+    let peer = req.query.peer;
+    if (!trxnId) {
+        res.json(getErrorMessage('\'trxnId\''));
+        return;
+    }
+
+    let message = await query.getTransactionByID(peer, req.params.channelName, trxnId, req.username, req.orgname);
+    res.send(message);
+});
