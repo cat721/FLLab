@@ -3,12 +3,6 @@ version: '2'
 services:
 
   mysql:
-    environment:
-      - MYSQL_ROOT_PASSWORD=123456
-      - MYSQL_DATABASE=my_db 
-      - MYSQL_USER=Jim
-      - MYSQL_PASSWORD=123456
-      - MYSQL_TABLE=userinfo
     image: fabric/mysql:5.7.22
     ports:
       - "12321:3306"
