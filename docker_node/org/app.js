@@ -190,7 +190,7 @@ app.post('/data', async function(req, res) {
 	logger.debug('End Time: ' + req.body.ETime);
 	var queryArgs = {
 		"Hostname": process.env.MYSQL_HOSTNAME,
-		"Port": process.env.MYSQL_POR,
+		"Port": process.env.MYSQL_PORT,
 		"User": process.env.MYSQL_USER,
 		"Password": process.env.MYSQL_PASSWORD,
 		"SourceID": req.body.SourceID,
@@ -238,8 +238,7 @@ app.get('/channels/:channelName/chaincodes/:chaincodeName', async function(req, 
         res.json(getErrorMessage('\'args\''));
         return;
     }
-    args = args.replace(/'/g, '"');
-    args = JSON.parse(args);
+    args = args.split(%);
     logger.debug(args);
 
     let message = await query.queryChaincode(peer, channelName, chaincodeName, args, fcn, req.username, req.orgname);

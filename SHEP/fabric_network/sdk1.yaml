@@ -1,0 +1,27 @@
+version: '2'
+
+services:
+
+  org1_sdk:
+    container_name: org1_sdk
+    image: fabric/sdk:0.1
+    ports: 
+      - 4000:4000
+    volumes:
+      - ../org1/network-config.yaml:/FLLab/org/artifacts/network-config.yaml
+      - ../org1/org.yaml:/FLLab/org/artifacts/org.yaml
+      - ../org1/src/:/FLLab/org/artifacts/src/
+      - ./channel-artifacts/channel.tx:/FLLab/org/artifacts/channel/channel.tx
+      - ./crypto-config/:/FLLab/org/artifacts/channel/crypto-config/
+      - ./bootstrap.sh:/FLLab/org/bootstrap.sh
+    environment:
+      - NODE_ROLE=create
+      - NODE_NAME=peer0
+      - NODE_ORG=Org1
+      - NODE_INIT_USER=Jim1
+      - NODE_FULLNAME=peer0.org1.example.com
+      - LISTEN_HOSTNAME=192.168.1.205
+    working_dir: /FLLab/org
+    command: /bin/bash bootstrap.sh 
+
+
