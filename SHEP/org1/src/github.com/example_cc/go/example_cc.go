@@ -100,25 +100,35 @@ func (t *SimpleChaincode) invoke(stub shim.ChaincodeStubInterface, args []string
 }
 
 func (t *SimpleChaincode) query(stub shim.ChaincodeStubInterface, args []string) pb.Response {
-	if len(args) != 5 {
-		return shim.Error("Incorrect number of arguments. Expecting 5")
+
+	var err error
+
+	if len(args) != 4 {
+		return shim.Error("Incorrect number of arguments.")
 	}
 
-	DemoIterator, err := stub.GetStateByPartialCompositeKey("DemoType", args[0:3])
+	IdIndexKey, err := stub.CreateCompositeKey("DemoType", args)
+
 	if err != nil {
-		return shim.Error(err.Error())
+		return shim.Error("Failed to create compositeKey")
 	}
-	defer DemoIterator.Close()
-	var item *queryresult.KV
-	if DemoIterator.HasNext() {
-		item, _ = DemoIterator.Next()
-	} else {
-		return shim.Error("cannot found such key")
-	}
-	resultByte, _ := json.Marshal(string(item.Value) == args[4])
-	return shim.Success(resultByte)
-}
 
+	// Get the state from the ledger
+
+	Avalbytes, err := stub.GetState(IdIndexKey)
+
+	if err != nil {
+		jsonResp := "{\"Error\":\"Failed to get state for " + args + "\"}"
+		return shim.Error(jsonResp)
+	}
+
+	if Avalbytes == nil {
+		jsonResp := "{\"Error\":\"Nil amount for " + args + "\"}"
+		return shim.Error(jsonResp)
+	}
+
+	return shim.Success(string(Avalbytes))
+}
 func main() {
 	err := shim.Start(new(SimpleChaincode))
 	if err != nil {

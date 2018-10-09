@@ -25,10 +25,6 @@ var invokeChaincode = async function(peerNames, channelName, chaincodeName, fcn,
 	logger.debug(util.format('\n============ invoke transaction on channel %s ============\n', channelName));
 	var error_message = null;
 	var tx_id_string = null;
-    var result={
-      "state":"",
-      "error_message":""
-    }
 	try {
 		// first setup the client for this org
 		var client = await helper.getClientForOrg(org_name, username);
@@ -36,7 +32,6 @@ var invokeChaincode = async function(peerNames, channelName, chaincodeName, fcn,
 		var channel = client.getChannel(channelName);
 		if(!channel) {
 			let message = util.format('Channel %s was not defined in the connection profile', channelName);
-            result.state=1005
 			logger.error(message);
 			throw new Error(message);
 		}
@@ -73,8 +68,6 @@ var invokeChaincode = async function(peerNames, channelName, chaincodeName, fcn,
 				one_good = true;
 				logger.info('invoke chaincode proposal was good');
 			} else {
-              result.state=1001;
-               error_message= proposalResponses[i].response.message
 				logger.error('invoke chaincode proposal was bad');
 			}
 			all_good = all_good & one_good;
@@ -144,7 +137,6 @@ var invokeChaincode = async function(peerNames, channelName, chaincodeName, fcn,
 				logger.info('Successfully sent transaction to the orderer.');
 			} else {
 				error_message = util.format('Failed to order the transaction. Error code: %s',response.status);
-                result.state=1002
 				logger.debug(error_message);
 			}
 
@@ -157,17 +149,15 @@ var invokeChaincode = async function(peerNames, channelName, chaincodeName, fcn,
 					logger.debug(event_hub_result);
 				} else {
 					if(!error_message) error_message = event_hub_result.toString();
-                    result.state=1003 
 					logger.debug(event_hub_result.toString());
 				}
 			}
 		} else {
-		//	error_message = util.format('Failed to send Proposal and receive all good ProposalResponse');
+			error_message = util.format('Failed to send Proposal and receive all good ProposalResponse');
 			logger.debug(error_message);
 		}
 	} catch (error) {
 		logger.error('Failed to invoke due to error: ' + error.stack ? error.stack : error);
-        result.state= 1004;
 		error_message = error.toString();
 	}
 
@@ -177,15 +167,11 @@ var invokeChaincode = async function(peerNames, channelName, chaincodeName, fcn,
 			org_name, channelName, tx_id_string);
 		logger.info(message);
 
-        result.state=500;
-        result.error_message=""
-		return result;
+		return tx_id_string;
 	} else {
 		let message = util.format('Failed to invoke chaincode. cause:%s',error_message);
 		logger.error(message);
-		//throw new Error(message);
-        result.error_message=message
-		return result;
+		throw new Error(message);
 	}
 };
 

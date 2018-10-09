@@ -8,6 +8,7 @@ EXPOSE 3306
 
 RUN echo " \
      use mysql; \
+     CREATE DATABASE IF NOT EXISTS ${MYSQL_DATABASE} DEFAULT CHARSET utf8 COLLATE utf8_general_ci;\
      grant all privileges on \`${MYSQL_DATABASE}\`.* to '${MYSQL_USER}'@'%' identified by '${MYSQL_PASSWORD}'; \
      flush privileges; \
      use ${MYSQL_DATABASE}; \
@@ -21,6 +22,5 @@ RUN echo " \
        \`MyTime\` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,\
        \`Flag\` boolean  NOT NULL,\
        PRIMARY KEY ( \`id\` )\
-     )ENGINE=InnoDB DEFAULT CHARSET=utf8;\
-   update userinfo set Flag = True where ReceiveId = 'b' and Flag = false;" > /docker-entrypoint-initdb.d/init.sql
+     )ENGINE=InnoDB DEFAULT CHARSET=utf8;" > /docker-entrypoint-initdb.d/init.sql
 
