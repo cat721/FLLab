@@ -4,7 +4,7 @@
 
 ```
 curl -s -X GET \
-  "http://localhost:4000/channels/mychannel/chaincodes/mycc?peer=peer0.org1.example.com&fcn=query&args=%$sourceID%$ReceiveID%$ServerID%$Timestamp" \
+  http://localhost:4000/channels/mychannel/chaincodes/mycc?peer=peer0.org1.example.com&fcn=query&args=%$sourceID%$ReceiveID%$ServerID%$Timestamp \
   -H "authorization: Bearer $ORG1_TOKEN" \
   -H "content-type: application/json"
 ```
