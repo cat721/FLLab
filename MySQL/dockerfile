@@ -7,8 +7,8 @@ ENV MYSQL_ROOT_PASSWORD=123456 MYSQL_DATABASE=my_db MYSQL_USER=Jim MYSQL_PASSWOR
 EXPOSE 3306
 
 RUN echo " \
-     use mysql; \
-     CREATE DATABASE IF NOT EXISTS ${MYSQL_DATABASE} DEFAULT CHARSET utf8 COLLATE utf8_general_ci;\
+     CREATE DATABASE IF NOT EXISTS \`${MYSQL_DATABASE}\` CHARACTER SET utf8 COLLATE utf8_general_ci;\
+     use ${MYSQL_DATABASE}; \
      grant all privileges on \`${MYSQL_DATABASE}\`.* to '${MYSQL_USER}'@'%' identified by '${MYSQL_PASSWORD}'; \
      flush privileges; \
      use ${MYSQL_DATABASE}; \
