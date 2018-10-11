@@ -20,7 +20,7 @@ function clearContainers() {
 }
 
 function removeUnwantedImages() {
-  DOCKER_IMAGE_IDS=$(docker images | grep "artifacts_default\|dev\|none\|test-vp\|peer[0-9]-" | awk '{print $3}')
+  DOCKER_IMAGE_IDS=$(docker images | grep "fabric_network_default\|artifacts_default\|dev\|none\|test-vp\|peer[0-9]-" | awk '{print $3}')
   if [ -z "$DOCKER_IMAGE_IDS" -o "$DOCKER_IMAGE_IDS" == " " ]; then
     echo "---- No images available for deletion ----"
   else

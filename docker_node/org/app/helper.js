@@ -67,7 +67,6 @@ async function getClientForOrg (userorg, username) {
 		}
 	}
 	logger.debug('getClientForOrg - ****** END %s %s \n\n', userorg, username)
-        logger.info('client of Org1 is ',client);
 	return client;
 }
 

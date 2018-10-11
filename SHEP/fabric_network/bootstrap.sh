@@ -36,7 +36,7 @@ if [ "$NODE_ROLE" = "create" ]; then
 	echo
 fi
 
-sleep 5
+sleep 10
 
 echo
 echo "JOIN CHANNEL FOR USER $NODE_INIT_USER IN $NODE_ORG START"
