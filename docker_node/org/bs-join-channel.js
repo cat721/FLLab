@@ -9,9 +9,7 @@ var main = async function() {
 		"mychannel", [fullname], process.env.NODE_INIT_USER, process.env.NODE_ORG);
 	let msgInstall = await install.installChaincode(
 		[fullname], "mycc","github.com/example_cc/go", "v0", "golang", process.env.NODE_INIT_USER, process.env.NODE_ORG);
-	let msgInst = await instantiate.instantiateChaincode(
-		fullname, "mychannel", "mycc", "v0", "golang", "init", ["a","100","b","200"], process.env.NODE_INIT_USER, process.env.NODE_ORG);
-        console.log("INSTANTIATE SUCCESS"); 
+        console.log("INSTALL SUCCESS"); 
         return
 }
 

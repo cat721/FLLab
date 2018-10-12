@@ -13,6 +13,7 @@ RUN echo " \
      flush privileges; \
      use ${MYSQL_DATABASE}; \
      CREATE TABLE IF NOT EXISTS \`${MYSQL_TABLE}\`( \
+       \`No\` VARCHAR(40) NOT NULL,\
        \`id\` INT UNSIGNED AUTO_INCREMENT,\
        \`SourceId\` VARCHAR(100) NOT NULL,\
        \`ReceiveId\` VARCHAR(40) NOT NULL,\

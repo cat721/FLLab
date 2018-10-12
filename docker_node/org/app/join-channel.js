@@ -35,7 +35,6 @@ var joinChannel = async function(channel_name, peers, username, org_name) {
 		logger.debug('Successfully got the fabric client for the organization "%s"', org_name);
 		var channel = client.getChannel(channel_name);
 
-		logger.info("The channel is ",channel);
 		if(!channel) {
 			let message = util.format('Channel %s was not defined in the connection profile', channel_name);
 			logger.error(message);
@@ -54,8 +53,6 @@ var joinChannel = async function(channel_name, peers, username, org_name) {
 		var promises = [];
 		var block_registration_numbers = [];
 		let event_hubs = client.getEventHubsForOrg(org_name);
-
-		logger.info("The event_hubs is",event_hubs);
 
 		event_hubs.forEach((eh) => {
 			let configBlockPromise = new Promise((resolve, reject) => {

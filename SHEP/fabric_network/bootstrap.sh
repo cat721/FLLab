@@ -46,8 +46,19 @@ node bs-join-channel.js &
 
 sleep 20
 
+if [ "$NODE_ROLE" = "create" ]; then
+	echo
+	echo "INSTANTIATE CHAINCODE START"
+	echo
+	node bs-instantiate-chaincode.js &
+	echo
+	echo "INSTANTIATE CHAINCODE END"
+fi
+
 echo
 echo "JOIN CHANNEL FOR USER $NODE_INIT_USER IN $NODE_ORG END"
 echo
+
+sleep 10
 
 node app
