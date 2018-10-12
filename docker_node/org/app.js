@@ -259,3 +259,28 @@ app.get('/channels/:channelName/transactions/:trxnId', async function(req, res) 
     let message = await query.getTransactionByID(peer, req.params.channelName, trxnId, req.username, req.orgname);
     res.send(message);
 });
+
+
+app.get('/num',async function(req,res){
+	logger.debug('================ QUERY By Event Num ======================');
+	logger.debug('host: ' + process.env.MYSQL_HOSTNAME);
+	logger.debug('user: ' + process.env.MYSQL_USER);
+	logger.debug('passwd: ' + process.env.MYSQL_PASSWORD);
+	logger.debug('Event num: ') + req.query.No;
+	var queryArgs = {
+		"Hostname": process.env.MYSQL_HOSTNAME,
+		"Port": process.env.MYSQL_PORT,
+		"User": process.env.MYSQL_USER,
+		"Password": process.env.MYSQL_PASSWORD,
+		"No": req.query.No
+	};
+
+	console.log(typeof queryArgs);
+  	logger.debug(queryArgs);
+	
+	let message = await querySQL.queryEventNum(queryArgs, res);
+	if (message) {
+		logger.error(message);
+	}
+});
+

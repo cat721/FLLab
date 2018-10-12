@@ -130,4 +130,48 @@ var queryMySQL = async function(queryArgs, res) {
 		logger.error(error);
 	}	
 };
+
+var queryEventNum = async function (queryArgs, res) {
+	try{
+		logger.debug('======================= QUERY FROM EVENT NUM =======================');
+		logger.debug('host: ' + queryArgs.Hostname);
+		logger.debug('user: ' + queryArgs.User);
+		logger.debug('passwd: ' + queryArgs.Password);
+		logger.debug('EventNum: ' + queryArgs.No);
+
+		var message = {"state":"","data": []};
+	
+		var connection = mysql.createConnection({
+			host: queryArgs.Hostname,
+			user: queryArgs.User,
+			prot: queryArgs.Port,
+			password: queryArgs.Password,
+			database: process.env.MYSQL_DATABASE
+		});
+
+		var sqlQueryStmt = 'select SourceID, ReceiveID, ServerID, Value, Tx_Id, TIME_FORMAT(MyTime, "%T") as TxTime from ' + process.env.MYSQL_TABLE + ' where No =  ' + queryArgs.No + ' order by MyTime asc;';
+         
+		connection.query(sqlQueryStmt, function (error, result) {
+			if(error){
+				logger.error('sql query \"' + sqlQueryStmt.toUpperCase() + '\" error');
+				message.state = 404;
+				message.data = "MySQL Database Connection Error";
+				res.send(message);
+			}else {
+				result.forEach(function (entry) {message.data.push(entry);});
+				logger.info("query result is: " + message.data);
+				message.state = 200;
+				res.send(message)
+			}
+	 
+	 
+	 });
+	
+	} catch(error) {
+		logger.error(error);
+	}	
+
+
+};
 exports.queryMySQL = queryMySQL;
+exports.queryEventNum = queryEventNum;
