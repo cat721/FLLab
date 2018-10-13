@@ -68,7 +68,7 @@ func (t *SimpleChaincode) invoke(stub shim.ChaincodeStubInterface, args []string
 	SourceId = args[1]
 	ReceiveId = args[2]
 	ServerId = args[3]
-	value = args[3]
+	value = args[4]
 
 	mytime, _ := stub.GetTxTimestamp()
 	loc, _ := time.LoadLocation("Asia/Chongqing")

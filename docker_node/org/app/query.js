@@ -41,7 +41,11 @@ var queryChaincode = async function(peer, channelName, chaincodeName, args, fcn,
 		};
 		let response_payloads = await channel.queryByChaincode(request);
 		if (response_payloads) {
-			return reponse_payloads;
+			for (let i = 0; i < response_payloads.length; i++) {
+				logger.info('the '+ i  +'th result is ' + response_payloads[i].toString('utf8')) ;
+			}
+			return response_payloads[0].toString('utf8'); 
+
 		} else {
 			logger.error('response_payloads is null');
 			return 'response_payloads is null';

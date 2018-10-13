@@ -238,7 +238,7 @@ app.get('/channels/:channelName/chaincodes/:chaincodeName', async function(req, 
         res.json(getErrorMessage('\'args\''));
         return;
     }
-    args = args.split("|");
+    args = args.split(",");
     logger.debug(args);
 
     let message = await query.queryChaincode(peer, channelName, chaincodeName, args, fcn, req.username, req.orgname);

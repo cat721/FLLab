@@ -74,7 +74,7 @@ var queryMySQL = async function(queryArgs, res) {
 			timeClause += (' and UNIX_TIMESTAMP(MyTime) <= UNIX_TIMESTAMP(\'' + queryArgs.ETime + '\')');
 		}
 		var tableName = process.env.MYSQL_TABLE;
-		var sqlQueryStmt = 'select SourceID, ReceiveID, ServerID, Value, Tx_Id, TIME_FORMAT(MyTime, "%T") as TxTime from ' + tableName + ' where ' + idClause + ' and ' + timeClause + ';'; 
+		var sqlQueryStmt = 'select No, SourceID, ReceiveID, ServerID, Value, Tx_Id, MyTime from ' + tableName + ' where ' + idClause + ' and ' + timeClause + ';'; 
 		var sqlUpdateStmt = 'update ' + tableName + ' set Flag = true where ' + idClause + ' and ' + timeClause + ';';
       logger.debug('query stmt is ' + sqlQueryStmt);
 
@@ -108,7 +108,7 @@ var queryMySQL = async function(queryArgs, res) {
 			} else {
 				result.forEach(function (entry) {message.data.push(entry);});
 				logger.info("query result is: " + message.data);
-                message.state = 500;
+                message.state = 200;
 
 		        // update `Flag' field
                 logger.debug("sql update stmt is " + sqlUpdateStmt.toUpperCase());
@@ -144,12 +144,12 @@ var queryEventNum = async function (queryArgs, res) {
 		var connection = mysql.createConnection({
 			host: queryArgs.Hostname,
 			user: queryArgs.User,
-			prot: queryArgs.Port,
+			port: queryArgs.Port,
 			password: queryArgs.Password,
 			database: process.env.MYSQL_DATABASE
 		});
 
-		var sqlQueryStmt = 'select SourceID, ReceiveID, ServerID, Value, Tx_Id, TIME_FORMAT(MyTime, "%T") as TxTime from ' + process.env.MYSQL_TABLE + ' where No =  ' + queryArgs.No + ' order by MyTime asc;';
+		var sqlQueryStmt = 'select SourceID, ReceiveID, ServerID, Value, Tx_Id, MyTime from ' + process.env.MYSQL_TABLE + ' where No =  \'' + queryArgs.No + '\' order by MyTime asc;';
          
 		connection.query(sqlQueryStmt, function (error, result) {
 			if(error){
@@ -163,7 +163,6 @@ var queryEventNum = async function (queryArgs, res) {
 				message.state = 200;
 				res.send(message)
 			}
-	 
 	 
 	 });
 	

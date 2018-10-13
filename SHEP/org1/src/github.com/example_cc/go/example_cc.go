@@ -47,6 +47,7 @@ func (t *SimpleChaincode) Init(stub shim.ChaincodeStubInterface) pb.Response {
 func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface) pb.Response {
 	fmt.Println("ex02 Invoke")
 	function, args := stub.GetFunctionAndParameters()
+	fmt.Println(args)
 	if function == "invoke" {
 		// Make payment of X units from A to B
 		return t.invoke(stub, args)
@@ -68,11 +69,14 @@ func (t *SimpleChaincode) invoke(stub shim.ChaincodeStubInterface, args []string
 	SourceId = args[1]
 	ReceiveId = args[2]
 	ServerId = args[3]
-	value = args[3]
+	value = args[4]
 
 	mytime, _ := stub.GetTxTimestamp()
 	loc, _ := time.LoadLocation("Asia/Chongqing")
 	timeKey := time.Unix(mytime.Seconds, 0).In(loc).Format("2006-01-02 15:04:05")
+
+	fmt.Printf("the type of timeKey is %T value is %v\n", timeKey, timeKey)
+
 	IdIndexKey, err := stub.CreateCompositeKey("DemoType", []string{No,SourceId, ReceiveId, ServerId, timeKey})
 	if err != nil {
 		return shim.Error("Failed to create compositeKey")
@@ -105,7 +109,7 @@ func (t *SimpleChaincode) query(stub shim.ChaincodeStubInterface, args []string)
 	var err error
 
 	if len(args) != 5 {
-		return shim.Error("Incorrect number of arguments.")
+		return shim.Error("Incorrect number of arguments. Expecting 5,receive "+string(len(args)))
 	}
 
 	IdIndexKey, err := stub.CreateCompositeKey("DemoType", args)
