@@ -1,3 +1,4 @@
+
 /**
  * Copyright 2017 IBM All Rights Reserved.
  *
@@ -13,6 +14,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
+
 'use strict';
 require('./config.js')
 var path = require('path');
@@ -21,9 +23,9 @@ var util = require('util');
 var hfc = require('fabric-client');
 var helper = require('./app/helper.js');
 var logger = helper.getLogger('invoke-chaincode');
-
 var mysql      = require('mysql');
-var connection = mysql.createConnection({
+
+var pool =  mysql.createPool({
     host     : process.env.MYSQL_HOSTNAME,
     port     : process.env.MYSQL_PORT,
     user     : process.env.MYSQL_USER,
@@ -31,36 +33,51 @@ var connection = mysql.createConnection({
     database : process.env.MYSQL_DATABASE,
     charset  : 'UTF8_GENERAL_CI'
 });
-connection.connect();
+
 
 var channelName="mychannel"
 var listen_hostname = process.env.LISTEN_HOSTNAME;
+
 helper.getClientForOrg(process.env.NODE_ORG,process.env.NODE_INIT_USER).then((client)=>{
-    let event_hub = client.newEventHub();
+
+  let event_hub = client.newEventHub();
+
   const data=fs.readFileSync(path.join(__dirname,"artifacts/channel/crypto-config/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt"))
     event_hub.setPeerAddr('grpcs://'+listen_hostname+':7053',{
       'pem':Buffer.from(data).toString(),
       'ssl-target-name-override':'peer0.org1.example.com'
     });
+
   event_hub.registerChaincodeEvent(
           "mycc","testWrite",
       (object) =>{
-        var msg=JSON.parse(object.payload)
-        var  userAddSql = 'INSERT INTO ' + process.env.MYSQL_TABLE + ' (No,SourceId,ReceiveId,ServerId,Value,Tx_Id,MyTime,Flag) VALUES(?,?,?,?,?,?,?,?)'
-        var userAddSql_Params=[msg.No,msg.SourceId,msg.ReceiveId,msg.ServerId,msg.Value,msg.Tx_Id,msg.Time,false]
-        console.log(userAddSql_Params)
-        connection.query(userAddSql,userAddSql_Params,function (err, result) {
-          console.log(err)
-          console.log(result)
-        })
+
+        var msg=JSON.parse(object.payload);
+        var userAddSql = 'INSERT INTO ' + process.env.MYSQL_TABLE + ' (No,SourceId,ReceiveId,ServerId,Value,Tx_Id,MyTime,Flag) VALUES(?,?,?,?,?,?,?,?)';
+        var userAddSql_Params=[msg.No,msg.SourceId,msg.ReceiveId,msg.ServerId,msg.Value,msg.Tx_Id,msg.Time,false];
+        console.log(userAddSql_Params);
+        pool.getConnection(function(err, connection){
+			connection.query(userAddSql,userAddSql_Params,function (err, result) {
+			console.log(err);
+			console.log(result);
+			});
+			connection.release();
+	
+		});
       },
       (err)=>{
-        console.log(err)
+        console.log(err);
       }
     )
+
 //  event_hub.registerBlockEvent((block)=>{console.log(block)},(err)=>{console.log(err)})
-  event_hub.connect()
+
+  event_hub.connect();
+
   
+
 }).catch((err)=>{
-  console.error('errmsg: '+err)
+
+  console.error('errmsg: '+err);
+
 });
