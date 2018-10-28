@@ -11,6 +11,6 @@ docker stop org1_sdk
 restart the docker container peer0.org1.example.com & org1_sdk
 
 ```
-fabric_network$ docker-compose -f peer0.yaml up -d 
-docker-compose -f sdk1.yaml up -d 
+docker start peer0.org1.example.com
+docker start org1_sdk
 ```
