@@ -31,32 +31,6 @@ services:
       service: zookeeper
     environment:
       - ZOO_MY_ID=3
-      
-#  zookeeper3:
-#    container_name: zookeeper3
-#    extends:
-#      file: base/docker-compose-base.yaml
-#      service: zookeeper
-#    environment:
-#      - ZOO_MY_ID=3
-      
-#  zookeeper4:
-#    container_name: zookeeper4
-#    extends:
-#      file: base/docker-compose-base.yaml
-#      service: zookeeper
-#    environment:
-#      - ZOO_MY_ID=4
-      
-#  zookeeper5:
-#    container_name: zookeeper5
-#    extends:
-#      file: base/docker-compose-base.yaml
-#      service: zookeeper
-#    environment:
-#      - ZOO_MY_ID=5
-
-
 
   
   kafka0:
@@ -70,9 +44,7 @@ services:
       - zookeeper0
       - zookeeper1
       - zookeeper2
-#      - zookeeper3
-#      - zookeeper4
-#      - zookeeper5
+
 
   kafka1:
     container_name: kafka1
@@ -85,9 +57,6 @@ services:
       - zookeeper0
       - zookeeper1
       - zookeeper2
-#      - zookeeper3
-#      - zookeeper4
-#      - zookeeper5
 
   kafka2:
     container_name: kafka2
@@ -100,9 +69,6 @@ services:
       - zookeeper0
       - zookeeper1
       - zookeeper2
-#      - zookeeper3
-#      - zookeeper4
-#      - zookeeper5
 
   kafka3:
     container_name: kafka3
@@ -115,40 +81,6 @@ services:
       - zookeeper0
       - zookeeper1
       - zookeeper2
-#      - zookeeper3
-#      - zookeeper4
-#      - zookeeper5
-
-#  kafka4:
-#    container_name: kafka4
-#    extends:
-#      file: base/docker-compose-base.yaml
-#      service: kafka
-#    environment:
-#      - KAFKA_BROKER_ID=4
-#    depends_on:
-#      - zookeeper0
-#      - zookeeper1
-#      - zookeeper2
-#      - zookeeper3
-#     - zookeeper4
-#      - zookeeper5      
-
-#  kafka5:
-#    container_name: kafka5
-#    extends:
-#      file: base/docker-compose-base.yaml
-#      service: kafka
-#    environment:
-#      - KAFKA_BROKER_ID=5
-#    depends_on:
-#      - zookeeper0
-#      - zookeeper1
-#      - zookeeper2
-#      - zookeeper3
-#      - zookeeper4
-#      - zookeeper5
-      
   
   ca.org1.example.com:
     image: hyperledger/fabric-ca
@@ -201,58 +133,7 @@ services:
     volumes:
       - ./crypto-config/peerOrganizations/org3.example.com/ca/:/etc/hyperledger/fabric-ca-server-config
     container_name: ca_Org3
-    
-  ca.org4.example.com:
-    image: hyperledger/fabric-ca
-    environment:
-      - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
-      - FABRIC_CA_SERVER_CA_NAME=ca4
-      - FABRIC_CA_SERVER_TLS_ENABLED=true
-      - FABRIC_CA_SERVER_TLS_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.org4.example.com-cert.pem
-      - FABRIC_CA_SERVER_TLS_KEYFILE=/etc/hyperledger/fabric-ca-server-config/CA4_PRIVATE_KEY
-      - FABRIC_CA_SERVER_CA_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.org4.example.com-cert.pem
-      - FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/fabric-ca-server-config/CA4_PRIVATE_KEY
-    ports:
-      - "10054:7054"
-    command: sh -c 'fabric-ca-server start -b admin:adminpw -d'
-    volumes:
-      - ./crypto-config/peerOrganizations/org4.example.com/ca/:/etc/hyperledger/fabric-ca-server-config
-    container_name: ca_Org4
 
-  ca.org5.example.com:
-    image: hyperledger/fabric-ca
-    environment:
-      - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
-      - FABRIC_CA_SERVER_CA_NAME=ca5
-      - FABRIC_CA_SERVER_TLS_ENABLED=true
-      - FABRIC_CA_SERVER_TLS_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.org5.example.com-cert.pem
-      - FABRIC_CA_SERVER_TLS_KEYFILE=/etc/hyperledger/fabric-ca-server-config/CA5_PRIVATE_KEY
-      - FABRIC_CA_SERVER_CA_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.org5.example.com-cert.pem
-      - FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/fabric-ca-server-config/CA5_PRIVATE_KEY
-    ports:
-      - "11054:7054"
-    command: sh -c 'fabric-ca-server start -b admin:adminpw -d'
-    volumes:
-      - ./crypto-config/peerOrganizations/org5.example.com/ca/:/etc/hyperledger/fabric-ca-server-config
-    container_name: ca_Org5
-
-  ca.org6.example.com:
-    image: hyperledger/fabric-ca
-    environment:
-      - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
-      - FABRIC_CA_SERVER_CA_NAME=ca6
-      - FABRIC_CA_SERVER_TLS_ENABLED=true
-      - FABRIC_CA_SERVER_TLS_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.org6.example.com-cert.pem
-      - FABRIC_CA_SERVER_TLS_KEYFILE=/etc/hyperledger/fabric-ca-server-config/CA5_PRIVATE_KEY
-      - FABRIC_CA_SERVER_CA_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.org6.example.com-cert.pem
-      - FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/fabric-ca-server-config/CA6_PRIVATE_KEY
-    ports:
-      - "12054:7054"
-    command: sh -c 'fabric-ca-server start -b admin:adminpw -d'
-    volumes:
-      - ./crypto-config/peerOrganizations/org6.example.com/ca/:/etc/hyperledger/fabric-ca-server-config
-    container_name: ca_Org6           
-    
  
   orderer0.example.com:
     extends:
@@ -275,9 +156,6 @@ services:
       - kafka1
       - kafka2
       - kafka3
-#      - kafka4
-#      - kafka5
-
   orderer1.example.com:
     extends:
       file:   base/docker-compose-base.yaml
@@ -299,9 +177,6 @@ services:
       - kafka1
       - kafka2
       - kafka3
-#      - kafka4
-#      - kafka5
-
   orderer2.example.com:
     extends:
       file:   base/docker-compose-base.yaml
@@ -483,83 +358,3 @@ services:
       - orderer4.example.com
       - orderer5.example.com
       
-  peer0.org4.example.com:
-    container_name: peer0.org4.example.com
-    extends:
-      file:   base/docker-compose-base.yaml
-      service: peer
-    environment:
-      - CORE_PEER_ID=peer0.org4.example.com
-      - CORE_PEER_LOCALMSPID=Org4MSP
-      - CORE_PEER_ADDRESS=peer0.org4.example.com:7051
-      - CORE_PEER_CHAINCODELISTENADDRESS=peer0.org4.example.com:7052
-      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org4.example.com:7051
-    ports:
-      - 10051:7051
-      - 10052:7052
-      - 10053:7053
-    volumes:
-      - /var/run/:/host/var/run/
-      - ./crypto-config/peerOrganizations/org4.example.com/peers/peer0.org4.example.com/msp:/etc/hyperledger/fabric/msp
-      - ./crypto-config/peerOrganizations/org4.example.com/peers/peer0.org4.example.com/tls:/etc/hyperledger/fabric/tls
-    depends_on:
-      - orderer0.example.com
-      - orderer1.example.com
-      - orderer2.example.com
-      - orderer3.example.com
-      - orderer4.example.com
-      - orderer5.example.com
-      
-  peer0.org5.example.com:
-    container_name: peer0.org5.example.com
-    extends:
-      file:   base/docker-compose-base.yaml
-      service: peer
-    environment:
-      - CORE_PEER_ID=peer0.org5.example.com
-      - CORE_PEER_LOCALMSPID=Org5MSP
-      - CORE_PEER_ADDRESS=peer0.org5.example.com:7051
-      - CORE_PEER_CHAINCODELISTENADDRESS=peer0.org5.example.com:7052
-      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org5.example.com:7051
-    ports:
-      - 11051:7051
-      - 11052:7052
-      - 11053:7053
-    volumes:
-      - /var/run/:/host/var/run/
-      - ./crypto-config/peerOrganizations/org5.example.com/peers/peer0.org5.example.com/msp:/etc/hyperledger/fabric/msp
-      - ./crypto-config/peerOrganizations/org5.example.com/peers/peer0.org5.example.com/tls:/etc/hyperledger/fabric/tls
-    depends_on:
-      - orderer0.example.com
-      - orderer1.example.com
-      - orderer2.example.com
-      - orderer3.example.com
-      - orderer4.example.com
-      - orderer5.example.com
-      
-  peer0.org6.example.com:
-    container_name: peer0.org6.example.com
-    extends:
-      file:   base/docker-compose-base.yaml
-      service: peer
-    environment:
-      - CORE_PEER_ID=peer0.org6.example.com
-      - CORE_PEER_LOCALMSPID=Org6MSP
-      - CORE_PEER_ADDRESS=peer0.org6.example.com:7051
-      - CORE_PEER_CHAINCODELISTENADDRESS=peer0.org6.example.com:7052
-      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org6.example.com:7051
-    ports:
-      - 12051:7051
-      - 12052:7052
-      - 12053:7053
-    volumes:
-      - /var/run/:/host/var/run/
-      - ./crypto-config/peerOrganizations/org6.example.com/peers/peer0.org6.example.com/msp:/etc/hyperledger/fabric/msp
-      - ./crypto-config/peerOrganizations/org6.example.com/peers/peer0.org6.example.com/tls:/etc/hyperledger/fabric/tls
-    depends_on:
-      - orderer0.example.com
-      - orderer1.example.com
-      - orderer2.example.com
-      - orderer3.example.com
-      - orderer4.example.com
-      - orderer5.example.com
