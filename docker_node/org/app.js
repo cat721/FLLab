@@ -284,3 +284,32 @@ app.get('/num',async function(req,res){
 	}
 });
 
+
+app.get('/count',async function(req,res){
+	        logger.debug('================ QUERY By Event Num ======================');
+	        logger.debug('host: ' + process.env.MYSQL_HOSTNAME);
+	        logger.debug('user: ' + process.env.MYSQL_USER);
+	        logger.debug('passwd: ' + process.env.MYSQL_PASSWORD);
+	        logger.debug('Event num: ') + req.query.No;
+		logger.debug('Start Time: ' + req.query.STime);
+	        logger.debug('End Time: ' + req.query.ETime);
+
+	        var queryArgs = {
+			                "Hostname": process.env.MYSQL_HOSTNAME,
+			                "Port": process.env.MYSQL_PORT,
+			                "User": process.env.MYSQL_USER,
+			                "Password": process.env.MYSQL_PASSWORD,
+			                "No": req.query.No,
+					"STime": req.query.STime,
+					"ETime":req.query.ETime
+			        };
+
+	        console.log(typeof queryArgs);
+	        logger.debug(queryArgs);
+
+	        let message = await querySQL.queryCount(queryArgs, res);
+	        if (message) {
+			                logger.error(message);
+			        }
+});
+
